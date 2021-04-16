@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from models.User import User
+from models.User import User, RegistrationForm, LoginForm
 from flask_app import db
 
 auth = Blueprint('auth', __name__)
@@ -10,7 +10,8 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login')
 def login():
-    return render_template('login.html')
+    form = LoginForm()
+    return render_template('login.html', form=form, title="Log in")
 
 
 @auth.route('/login', methods=['POST'])
@@ -34,31 +35,28 @@ def login_post():
 
 @auth.route('/signup')
 def signup():
-    return render_template('signup.html')
+    form = RegistrationForm()
+    return render_template('signup.html', title='Register', form=form)
 
 
 @auth.route('/signup', methods=['POST'])
 def signup_post():
-    # code to validate and add user to database goes here
-    email = request.form.get('email')
-    name = request.form.get('name')
-    password = request.form.get('password')
-    school = request.form.get('school')
+    form = RegistrationForm()
 
-    user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
+    if form.validate_on_submit():
+        # convert password to hashed
+        form.password.data = generate_password_hash(form.password.data)
+        flash(f'Account created for {form.name.data}!', 'success')
+        user = User()
+        form.populate_obj(user)
 
-    if user:  # if a user is found, we want to redirect back to signup page so user can try again
-        flash('Email address already exists')
-        return redirect(url_for('auth.signup'))
-
-    # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-    new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'), school=school)
-
-    # add the new user to the database
-    db.session.add(new_user)
-    db.session.commit()
-
-    return redirect(url_for('auth.login'))
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('auth.login'))
+    else:
+        if "email" in form.errors:
+            flash('Email must be unique.')
+        return render_template('signup.html', title='Register', form=form)
 
 
 @auth.route('/logout')

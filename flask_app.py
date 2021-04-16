@@ -8,13 +8,13 @@ import yaml
 
 
 db = SQLAlchemy()
+migrate = Migrate()
+app = Flask(__name__)
 
 
 # init SQLAlchemy so we can use it later in our models
 def create_app():
-    app = Flask(__name__)
     db_info = yaml.load(open(os.path.join(os.getcwd(), 'db.yaml')), Loader=yaml.BaseLoader)
-
     host = db_info['mysql_host']
     user = db_info['mysql_user']
     password = db_info['mysql_password']
@@ -26,7 +26,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     db.init_app(app)
-    migrate = Migrate(app, db)
+    # db.metadata.clear()
     migrate.init_app(app, db)
 
     # manager = Manager(app)
@@ -51,12 +51,10 @@ def create_app():
     # blueprint for non-auth parts of app
     app.register_blueprint(main_blueprint)
 
-    # db.create_all(app)
-    # db.session.commit()
-    #
-    # guest = User.User('guest', 'guest@example.com')
-    # db.session.add(guest)
-    # db.session.commit()
+    # db.drop_all(app)
+    with app.app_context():
+        db.create_all()
+        db.session.commit()
 
     with app.app_context():
         db.create_all()
