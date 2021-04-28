@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% set active_page = "projects" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-6">
+        <h1>Create New Project</h1>
+        <div class="card">
+    <div class="card-header">
+        Create New Project
+    </div>
+    <div class="card-body">
+
+    <div class="row">
+    <div class="col">
+
+        <div class="row">
+            <form method="POST" action="{{ url_for("projects_controller.new_project_post") }}" class="row row-cols-lg-auto align-items-center">
+            {{ form.hidden_tag() }}
+
+            <div class="col-8">
+                <div class="input-group">
+                  <div class="input-group-text">Project Name:</div>
+                    {{ form.name(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="col-4">
+                <button type="submit" class="btn btn-primary">Create Project</button>
+            </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+<hr>
+
+<h1>Active Projects</h1>
+    <div class="row">
+        <div class="col">
+            {% for project_row in projects | batch(3, '&nbsp;') %}
+                <div class="row">
+                    {% for project in project_row %}
+                        {% if project != '&nbsp;' %}
+                        <div class="col-4">
+                            <div class="card">
+                              <h5 class="card-header">{{ project.name }}</h5>
+                              <div class="card-body">
+                                <h5 class="card-title">{{ project.notes[:100] }}</h5>
+                                <p class="card-text"></p>
+                                <a href="{{ url_for('projects_controller.deactivate_project', project_id=project.id) }}"
+                                   class="link-danger">Deactivate</a>
+                                <a href="#" class="float-end btn btn-outline-primary">Manage</a>
+
+                              </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+        </div>
+    </div>
+<hr>
+
+<h1>Inactive Projects</h1>
+    <div class="row">
+        <div class="col">
+            {% for project_row in inactive_projects | batch(3, '&nbsp;') %}
+                <div class="row">
+                    {% for project in project_row %}
+                        {% if project != '&nbsp;' %}
+                        <div class="col-4">
+                            <div class="card">
+                              <h5 class="card-header">{{ project.name }}</h5>
+                              <div class="card-body">
+                                <h5 class="card-title">{{ project.notes[:100] }}</h5>
+                                <p class="card-text"></p>
+                                <a href="{{ url_for('projects_controller.delete_project', project_id=project.id) }}"
+                                   class="link-danger">Delete</a>
+                                <a href="{{ url_for('projects_controller.activate_project', project_id=project.id) }}" class="float-end btn btn-outline-primary">Activate</a>
+
+                              </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+        </div>
+    </div>
+<hr>
+{% endblock %}
+

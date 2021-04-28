@@ -26,7 +26,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     db.init_app(app)
-    # db.metadata.clear()
+    db.metadata.clear()
     migrate.init_app(app, db)
 
     # manager = Manager(app)
@@ -36,9 +36,10 @@ def create_app():
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
-    from models import User
+    from models import User, Project
     from main import main as main_blueprint
-    from auth import auth as auth_blueprint
+    from controllers.auth import auth as auth_blueprint
+    from controllers.projects_controller import projects_controller as projects_blueprint
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -48,8 +49,11 @@ def create_app():
     # blueprint for auth routes in our app
     app.register_blueprint(auth_blueprint)
 
-    # blueprint for non-auth parts of app
+    # blueprint for main parts of app
     app.register_blueprint(main_blueprint)
+
+    # register projects controller app
+    app.register_blueprint(projects_blueprint)
 
     # db.drop_all(app)
     with app.app_context():

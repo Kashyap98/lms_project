@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from flask_wtf import FlaskForm
+from sqlalchemy.orm import relationship
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, ValidationError
 
@@ -11,6 +12,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
+
+    projects = relationship("Project", back_populates="user")
     is_active = db.Column(db.Boolean, nullable=False, default=True)
 
 

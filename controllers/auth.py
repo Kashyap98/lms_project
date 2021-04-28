@@ -11,7 +11,7 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login')
 def login():
     form = LoginForm()
-    return render_template('login.html', form=form, title="Log in")
+    return render_template('user/login.html', form=form, title="Log in")
 
 
 @auth.route('/login', methods=['POST'])
@@ -36,7 +36,7 @@ def login_post():
 @auth.route('/signup')
 def signup():
     form = RegistrationForm()
-    return render_template('signup.html', title='Register', form=form)
+    return render_template('user/signup.html', title='Register', form=form)
 
 
 @auth.route('/signup', methods=['POST'])
@@ -56,7 +56,7 @@ def signup_post():
     else:
         if "email" in form.errors:
             flash('Email must be unique.')
-        return render_template('signup.html', title='Register', form=form)
+        return render_template('user/signup.html', title='Register', form=form)
 
 
 @auth.route('/logout')
