@@ -17,9 +17,16 @@
 <div class="container">
   <header class="d-flex justify-content-center py-3">
     <ul class="nav nav-pills">
-      <li class="nav-item"><a href="{{ url_for('main.index') }}" class="nav-link {{ 'active' if active_page == 'home' else '' }}">
+      <li class="nav-item">
+          {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('main.profile') }}" class="nav-link {{ 'active' if active_page == 'home' else '' }}">
                                 Home
                             </a></li>
+          {% else %}
+          <a href="{{ url_for('main.index') }}" class="nav-link {{ 'active' if active_page == 'home' else '' }}">
+                                Home
+                            </a></li>
+          {% endif %}
       <li class="nav-item">{% if current_user.is_authenticated %}
                             <a href="{{ url_for('projects_controller.index') }}" class="nav-link {{ 'active' if active_page == 'projects' else '' }}">
                                 Projects
@@ -29,6 +36,8 @@
                             <a href="{{ url_for('auth.login') }}" class="nav-link {{ 'active' if active_page == 'login' else '' }}">
                                 Login
                             </a>
+                            </li>
+        <li class="nav-item">
                             <a href="{{ url_for('auth.signup') }}" class="nav-link {{ 'active' if active_page == 'signup' else '' }}">
                                 Sign Up
                             </a>

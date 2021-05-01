@@ -55,12 +55,13 @@
                             <div class="card">
                               <h5 class="card-header">{{ project.name }}</h5>
                               <div class="card-body">
-                                <h5 class="card-title">{{ project.notes[:100] }}</h5>
-                                <p class="card-text"></p>
+                                <h5 class="card-title">Notes: {{ project.notes[:100] }}</h5>
+                                <div class="align-content-center">
                                 <a href="{{ url_for('projects_controller.deactivate_project', project_id=project.id) }}"
                                    class="link-danger">Deactivate</a>
-                                <a href="#" class="float-end btn btn-outline-primary">Manage</a>
-
+                                <a href="{{ url_for('projects_controller.edit_project', project_id=project.id) }}"
+                                   class="float-end btn btn-outline-primary">Manage</a>
+                                    </div>
                               </div>
                             </div>
                         </div>

@@ -16,6 +16,8 @@ class Project(db.Model):
 
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User", back_populates="projects")
+    tasks = relationship("Task", back_populates="project")
+
     is_active = db.Column(db.Boolean, default=True)
 
     @staticmethod
@@ -29,6 +31,7 @@ class Project(db.Model):
                 inactive_projects.append(project)
 
         return active_projects, inactive_projects
+
 
 class ProjectForm(FlaskForm):
     class Meta:

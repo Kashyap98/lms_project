@@ -1,10 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import login_required, current_user
 from sqlalchemy import and_
-from werkzeug.security import generate_password_hash, check_password_hash
 
 from models.Project import ProjectForm, Project
-from models.User import User, RegistrationForm, LoginForm
 from flask_app import db
 
 projects_controller = Blueprint('projects_controller', __name__)
@@ -80,3 +78,43 @@ def delete_project():
     flash(f'Project deleted!', 'success')
 
     return redirect(url_for('projects_controller.index'))
+
+
+@projects_controller.route('/projects/edit', methods=['GET'])
+@login_required
+def edit_project():
+    project_id = request.args.get('project_id')
+    project = Project.query.filter(and_(Project.user_id == current_user.id, Project.id == project_id)).first()
+
+    if project:
+        form = ProjectForm(obj=project)
+        return render_template('project/edit.html', name=current_user.name, title=f"{project.name} | Edit", form=form,
+                               project_id=project_id)
+    else:
+        flash(f'Project does not exist.', 'error')
+        return redirect(url_for('projects_controller.index'))
+
+
+@projects_controller.route('/projects/edit', methods=['POST'])
+@login_required
+def edit_project_post():
+    form = ProjectForm()
+    project_id = request.args.get('project_id')
+    project = Project.query.filter(and_(Project.user_id == current_user.id, Project.id == project_id)).first()
+
+    if project:
+        if form.validate_on_submit():
+            form.populate_obj(project)
+            db.session.add(project)
+            db.session.commit()
+
+            flash(f'Successfully updated project.', 'success')
+            return render_template('project/edit.html', name=current_user.name, title=f"{project.name} | Edit",
+                                   form=form)
+        else:
+            flash(f'Error updating project.', 'error')
+            return render_template('project/edit.html', name=current_user.name, title=f"{project.name} | Edit",
+                                   form=form)
+    else:
+        flash(f'Project does not exist.', 'error')
+        return redirect(url_for('projects_controller.index'))

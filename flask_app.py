@@ -36,10 +36,12 @@ def create_app():
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
-    from models import User, Project
+    from models import User, Project, Task, Reminder
     from main import main as main_blueprint
     from controllers.auth import auth as auth_blueprint
     from controllers.projects_controller import projects_controller as projects_blueprint
+    from controllers.tasks_controller import tasks_controller as tasks_blueprint
+    from controllers.reminders_controller import reminders_controller
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -54,6 +56,12 @@ def create_app():
 
     # register projects controller app
     app.register_blueprint(projects_blueprint)
+
+    # register tasks controller app
+    app.register_blueprint(tasks_blueprint)
+
+    # register reminders controller app
+    app.register_blueprint(reminders_controller)
 
     # db.drop_all(app)
     with app.app_context():
