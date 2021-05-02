@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% set active_page = "projects" %}
+
+{% block content %}
+
+
+<div class="row">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('projects_controller.index') }}">Projects</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('projects_controller.edit_project', project_id=project.id) }}"
+                                       aria-current="page">{{ project.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ task.name }}</li>
+      </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+        <div class="card-header">
+            Edit {{ task.name }}
+        </div>
+        <div class="card-body">
+            <div class="row">
+
+                <div class="col">
+                    <form method="POST" action="{{ url_for("tasks_controller.edit_task_post", task_id=task.id) }}">
+                        {{ form.hidden_tag() }}
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="input-group-text">Task Name:</div>
+                                    {{ form.name(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="input-group-text">Notes:</div>
+                                    {{ form.notes(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="input-group-text">Date:</div>
+                                    {{ form.date(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col">
+                                        <p>Only input times if task is a meeting instead of an assignment.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="input-group">
+                                            <div class="input-group-text">Start Time:</div>
+                                            {{ form.start_time(class="form-control") }}
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="input-group">
+                                            <div class="input-group-text">End Time:</div>
+                                            {{ form.end_time(class="form-control") }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-primary">Edit Task</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<hr>
+<div class="row">
+    <div class="col">
+
+        <div class="row">
+            <div class="col">
+                        <div class="card">
+        <div class="card-header">
+            Add Reminder
+        </div>
+        <div class="card-body">
+            <div class="row">
+
+                <div class="col">
+                    <form method="POST" action="{{ url_for("reminders_controller.new_reminder_post") }}">
+                        {{ reminder_form.hidden_tag() }}
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="input-group-text">Time:</div>
+                                    {{ reminder_form.date_time(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-primary">New Reminder</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="row">
+    <div class="col">
+        <div class="row">
+            <div class="col">
+                <h3>Current Reminders</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Time</th>
+                      <th scope="col">Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for reminder in task.reminders %}
+                    <tr>
+                        <td></td>
+                      <td>{{ reminder.date_time.strftime('%Y-%m-%d %I:%M %p') }}</td>
+                        <td><a class="btn btn-danger"
+                               href="{{ url_for('reminders_controller.delete_reminder', reminder_id=reminder.id) }}">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

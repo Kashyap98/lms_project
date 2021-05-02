@@ -1,79 +1,23 @@
 {% extends "base.html" %}
-{% set active_page = "projects" %}
+{% set active_page = "upcoming" %}
 
 {% block content %}
 
-
-<div class="row">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ url_for('projects_controller.index') }}">Projects</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{{ form.name.data }}</li>
-      </ol>
-    </nav>
-</div>
-
-<div class="row">
+    <div class="row">
     <div class="col">
-        <h1>Edit {{ form.name.data }}</h1>
-        <a class="btn btn-secondary" href="{{ url_for('tasks_controller.index', project_id=project_id) }}">Add New Task</a>
-    <div class="card">
-        <div class="card-header">
-            Edit Project
-        </div>
-        <div class="card-body">
-            <div class="row">
 
-                <div class="col">
-                    <form method="POST" action="{{ url_for("projects_controller.edit_project_post", project_id=project_id) }}">
-                        {{ form.hidden_tag() }}
-
-                        <div class="row">
-                            <div class="col">
-                                <div class="input-group">
-                                    <div class="input-group-text">Project Name:</div>
-                                    {{ form.name(class="form-control") }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col">
-                                <div class="input-group">
-                                    <div class="input-group-text">Notes:</div>
-                                    {{ form.notes(class="form-control") }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-4">
-                                <button type="submit" class="btn btn-primary">Edit Project</button>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    </div>
-</div>
-<hr>
-
-<div class="row">
+    <div class="row">
     <div class="col">
         <div class="row">
-            <h1>Tasks</h1>
+            <h3>Upcoming Tasks</h3>
         </div>
         <div class="row">
             <div class="col">
-                {% for task_row in tasks | batch(2, '&nbsp;') %}
+                {% for task_row in tasks[:6] | batch(3, '&nbsp;') %}
                 <div class="row">
                     {% for task in task_row %}
                         {% if task != '&nbsp;' %}
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="card">
                               <h5 class="card-header">
                                   {{ task.name }} - {{ task.date }}
@@ -118,6 +62,7 @@
     </div>
 </div>
 <hr>
-
+    </div>
+    </div>
 {% endblock %}
 

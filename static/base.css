@@ -17,3 +17,11 @@ html, body {
     width: 100%;
     padding: 15px;
 }
+
+.input-group{
+    margin: 10px;
+}
+
+.card-footer{
+    padding: 1rem;
+}

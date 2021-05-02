@@ -15,6 +15,7 @@ def index():
 @login_required
 def profile():
     # get name from database
+    # select regular sql requirement
     sql = text(f'select name from user WHERE id = {current_user.id}')
     result = db.engine.execute(sql)
 
