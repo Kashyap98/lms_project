@@ -1,0 +1,62 @@
+
+create table user
+(
+	id int auto_increment
+		primary key,
+	email varchar(100) not null,
+	password varchar(100) not null,
+	name varchar(100) not null,
+	is_active tinyint(1) not null,
+	constraint email
+		unique (email)
+);
+
+create table project
+(
+	id int auto_increment
+		primary key,
+	name varchar(100) not null,
+	notes text not null,
+	user_id int null,
+	is_active tinyint(1) null,
+	constraint name
+		unique (name),
+	constraint project_ibfk_1
+		foreign key (user_id) references user (id)
+);
+
+create index user_id
+	on project (user_id);
+
+create table task
+(
+	id int auto_increment
+		primary key,
+	name varchar(100) not null,
+	notes text not null,
+	date date not null,
+	start_time time null,
+	end_time time null,
+	project_id int null,
+	is_completed tinyint(1) null,
+	constraint task_ibfk_1
+		foreign key (project_id) references project (id)
+);
+
+create table reminder
+(
+	id int auto_increment
+		primary key,
+	date_time datetime not null,
+	task_id int null,
+	has_expired tinyint(1) null,
+	constraint reminder_ibfk_1
+		foreign key (task_id) references task (id)
+);
+
+create index task_id
+	on reminder (task_id);
+
+create index project_id
+	on task (project_id);
+
