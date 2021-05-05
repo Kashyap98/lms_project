@@ -60,7 +60,7 @@ def edit_task():
     task = Task.query.filter(Task.id == task_id).first()
 
     # update subquery regular sql for requirement
-    update_query = text("UPDATE reminder SET has_expired=1 WHERE id = (SELECT id FROM reminder WHERE date_time <= NOW());")
+    update_query = text("UPDATE reminder SET has_expired=1 WHERE id IN (SELECT id FROM (SELECT * FROM reminder) as r WHERE date_time <= NOW());")
     db.engine.execute(update_query)
     db.session.commit()
 
